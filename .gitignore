@@ -1,0 +1,7 @@
+*.orig$
+*.rej$
+*.class$
+*~
+.idea
+*.iml
+target
