@@ -6,13 +6,11 @@ import jnr.ffi.annotations.Out;
 import jnr.ffi.annotations.Transient;
 
 /**
- * Hello world!
- *
+ * Retrieves the current system time using gettimeofday(3)
  */
-public class Gettimeofday
-{
+public class Gettimeofday {
     public static final class Timeval extends Struct {
-        public final SignedLong tv_sec = new SignedLong();
+        public final time_t tv_sec = new time_t();
         public final SignedLong tv_usec = new SignedLong();
 
         public Timeval(Runtime runtime) {
@@ -23,10 +21,10 @@ public class Gettimeofday
     public interface LibC  {
         public int gettimeofday(@Out @Transient Timeval tv, Pointer unused);
     }
-    public static void main( String[] args )
-    {
-        LibC libc = Library.loadLibrary("c", LibC.class);
-        Runtime runtime = Library.getRuntime(libc);
+
+    public static void main( String[] args ) {
+        LibC libc = LibraryLoader.create(LibC.class).load("c");
+        Runtime runtime = Runtime.getRuntime(libc);
 
         Timeval tv = new Timeval(runtime);
         libc.gettimeofday(tv, null);

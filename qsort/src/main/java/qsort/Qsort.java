@@ -1,10 +1,12 @@
 package qsort;
 
 
-import jnr.ffi.Library;
+import jnr.ffi.LibraryLoader;
 import jnr.ffi.Memory;
 import jnr.ffi.Pointer;
+import jnr.ffi.Runtime;
 import jnr.ffi.annotations.Delegate;
+import jnr.ffi.types.size_t;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -15,8 +17,8 @@ import java.nio.IntBuffer;
  * Hello world!
  *
  */
-public class Qsort
-{
+public class Qsort {
+
     public static interface Compare {
         @Delegate public int compare(Pointer p1, Pointer p2);
     }
@@ -31,14 +33,19 @@ public class Qsort
     }
 
     public interface LibC {
-        public int qsort(int[] data, int count, int width, Compare compare);
-        public int qsort(Pointer data, int count, int width, Compare compare);
-        public int qsort(Buffer data, int count, int width, Compare compare);
+        public int qsort(int[] data, @size_t int count, @size_t int width, Compare compare);
+        public int qsort(Pointer data, @size_t long count, @size_t int width, Compare compare);
+        public int qsort(Buffer data, @size_t long count, @size_t int width, Compare compare);
     }
 
-    public static void main( String[] args )
-    {
-        LibC libc = Library.loadLibrary("c", LibC.class);
+    public static void main(String[] args) {
+        // FIXME: remove these once jnr-ffi 1.0.5 is released
+        System.setProperty("jnr.ffi.fast-long.enabled", "false");
+        System.setProperty("jnr.ffi.fast-int.enabled", "false");
+        System.setProperty("jnr.ffi.fast-numeric.enabled", "false");
+        System.setProperty("jnr.ffi.x86asm.enabled", "false");
+
+        LibC libc = LibraryLoader.create(LibC.class).load("c");
 
         int[] numbers = { 2, 1 };
         System.out.println("qsort using java int[] array");
@@ -48,7 +55,7 @@ public class Qsort
         System.out.append('\n');
 
         System.out.println("sort using native memory");
-        Pointer memory = Memory.allocate(Library.getRuntime(libc), 8);
+        Pointer memory = Memory.allocate(Runtime.getRuntime(libc), 8);
         memory.putInt(0, 4);
         memory.putInt(4, 3); // offset is in bytes
         System.out.println("before, memory[0]=" + memory.getInt(0) + " memory[1]=" + memory.getInt(4));
