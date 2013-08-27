@@ -39,11 +39,6 @@ public class Qsort {
     }
 
     public static void main(String[] args) {
-        // FIXME: remove these once jnr-ffi 1.0.5 is released
-        System.setProperty("jnr.ffi.fast-long.enabled", "false");
-        System.setProperty("jnr.ffi.fast-int.enabled", "false");
-        System.setProperty("jnr.ffi.fast-numeric.enabled", "false");
-        System.setProperty("jnr.ffi.x86asm.enabled", "false");
 
         LibC libc = LibraryLoader.create(LibC.class).load("c");
 
