@@ -11,7 +11,7 @@ import jnr.ffi.annotations.Transient;
 public class Gettimeofday {
     public static final class Timeval extends Struct {
         public final time_t tv_sec = new time_t();
-        public final SignedLong tv_usec = new SignedLong();
+        public final Unsigned32 tv_usec = new Unsigned32();
 
         public Timeval(Runtime runtime) {
             super(runtime);
